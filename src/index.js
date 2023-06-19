@@ -1,11 +1,10 @@
 
-import { fetchBreeds } from "./cat-api";
+import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 
 
 const selectEl = document.querySelector('.breed-select')
+const catEl = document.querySelector('.cat-info');
 
-// const BASE_URL = 'https://api.thecatapi.com/v1/breeds';
-// const API_KEY = 'live_MsuspCDcKIxxbH4VLrjhx8kNUGJ3Tvid4KTY7V2POZdHhqXRTw4cAbG9e0qbawVd';
 creatSelectOptions ();
 
 function creatSelectOptions () {
@@ -19,3 +18,22 @@ function renderOptions(breeds) {
     .join("");
     selectEl.insertAdjacentHTML('beforeend', markup);
 }
+
+selectEl/addEventListener('change', onBreedSelect);
+
+function onBreedSelect () {
+  let breedId = selectEl.value;
+  fetchCatByBreed(breedId).then((objCat) => renderArticle(objCat));
+  
+}
+
+function renderArticle(objCat) {
+  const markupBreedDescr = objCat.map(({url, breeds }) => {
+    return `<img src="${url}" alt="" width="300px">
+  <h2>${breeds[0].name}</h2>
+  <p>${breeds[0].description}</p>
+  <p>Temperament: ${breeds[0].temperament}</p>`
+})
+catEl.insertAdjacentHTML('beforeend', markupBreedDescr)
+}
+
