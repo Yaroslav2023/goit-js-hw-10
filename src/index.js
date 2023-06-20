@@ -16,9 +16,7 @@ function creatSelectOptions () {
     fetchBreeds().then((breeds) => {renderOptions(breeds);
     loaderHidden()
 });
-
 }
-
 
 function renderOptions(breeds) {
     const markup = breeds.map(({ id, name }) => {
