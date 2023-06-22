@@ -1,11 +1,11 @@
-
+import Notiflix from 'notiflix';
 import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 import SlimSelect from 'slim-select'
 
 
 const selectEl = document.querySelector('.breed-select');
 const catEl = document.querySelector('.cat-info');
-const loaderEl = document.querySelector('.loader');
+const loaderEl = document.querySelector('.loader-text');
 const errorEl = document.querySelector('.error');
 
 errorHidden();
@@ -15,12 +15,11 @@ creatSelectOptions ();
 function creatSelectOptions () {
     fetchBreeds().then((breeds) => {renderOptions(breeds);
     loaderHidden();
-    selectNotHidden();
-});
-}
+    selectNotHidden();}).catch(error => Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!', 1000, selectError()))};
 
-function renderOptions(breeds) {
-    const markup = breeds.map(({ id, name }) => {
+
+function renderOptions(data) {
+    const markup = data.map(({ id, name }) => {
       return `<option value = ${id}>${name}</option>`
     })
     .join("");
@@ -34,7 +33,7 @@ function onBreedSelect () {
   loaaderNotHidden();
   let breedId = selectEl.value;
   fetchCatByBreed(breedId).then((objCat) => {renderArticle(objCat);
-    loaderHidden();});
+    loaderHidden(objCat);}).catch(error => Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!', 1000));
 }
 
 function renderArticle(objCat) {
@@ -65,6 +64,10 @@ function errorHidden() {
   errorEl.classList.add('visually-hidden');
 }
 
+function errorNotHidden() {
+  errorEl.classList.remove('visually-hidden');
+}
+
 function selectHidden() {
   selectEl.classList.add('visually-hidden');
 }
@@ -73,3 +76,8 @@ function selectNotHidden() {
   selectEl.classList.remove('visually-hidden');
 }
 
+function selectError() {
+  selectEl.classList.add('visually-hidden');
+  errorEl.classList.remove('visually-hidden');
+  loaderEl.classList.add('visually-hidden');
+}
